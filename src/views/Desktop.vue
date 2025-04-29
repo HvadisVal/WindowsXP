@@ -18,11 +18,18 @@
     <div
       v-if="showComputerWindow"
       class="popup-group"
-      :style="{ top: popupPosition.top + 'px', left: popupPosition.left + 'px' }"
+      :style="{
+        top: popupPosition.top + 'px',
+        left: popupPosition.left + 'px',
+      }"
       @mousedown="startDragging"
     >
       <div class="popup-drag-zone"></div>
-      <img src="../assets/MyComputerWithFiles.svg" class="popup-image" alt="My Computer" />
+      <img
+        src="../assets/MyComputerWithFiles.svg"
+        class="popup-image"
+        alt="My Computer"
+      />
 
       <!-- Links folder inside -->
       <div class="links-folder" @click.stop="openLinksWindow">
@@ -38,34 +45,33 @@
       <button class="popup-close" @click.stop="closeWindow">X</button>
     </div>
 
-   <!-- Links popup -->
-<div
-  v-if="showLinksWindow"
-  class="popup-group"
-  :style="{ top: linksPopup.top + 'px', left: linksPopup.left + 'px' }"
-  @mousedown="startDraggingLinks"
->
-  <div class="popup-drag-zone"></div>
-  <img
-    src="../assets/MyComputerNoFile.svg"
-    alt="Links Folder Opened"
-    class="popup-image"
-  />
-  <button class="popup-close" @click.stop="closeLinksWindow">X</button>
+    <!-- Links popup -->
+    <div
+      v-if="showLinksWindow"
+      class="popup-group"
+      :style="{ top: linksPopup.top + 'px', left: linksPopup.left + 'px' }"
+      @mousedown="startDraggingLinks"
+    >
+      <div class="popup-drag-zone"></div>
+      <img
+        src="../assets/MyComputerNoFile.svg"
+        alt="Links Folder Opened"
+        class="popup-image"
+      />
+      <button class="popup-close" @click.stop="closeLinksWindow">X</button>
 
-  <!-- Clickable Links inside Links popup -->
-  <div
-    v-for="(link, index) in linkItems"
-    :key="index"
-    class="link-item"
-    :style="{ top: link.top + 'px', left: link.left + 'px' }"
-    @click.stop="openLink(link.url)"
-  >
-    <img src="../assets/Link.svg" alt="Link Icon" class="link-icon" />
-    <p class="link-label">{{ link.label }}</p>
-  </div>
-</div>
-
+      <!-- Clickable Links inside Links popup -->
+      <div
+        v-for="(link, index) in linkItems"
+        :key="index"
+        class="link-item"
+        :style="{ top: link.top + 'px', left: link.left + 'px' }"
+        @click.stop="openLink(link.url)"
+      >
+        <img :src="link.icon" alt="Link Icon" class="link-icon" />
+        <p class="link-label">{{ link.label }}</p>
+      </div>
+    </div>
 
     <!-- File popup with placeholder demos -->
     <div
@@ -75,8 +81,17 @@
       @mousedown="startDraggingFile"
     >
       <div class="popup-drag-zone"></div>
-      <img src="../assets/MyComputerNoFile.svg" class="popup-image" alt="File Folder" />
-      <div class="demo-file" v-for="n in 7" :key="n" :style="{ top: `${140 + n * 40}px`, left: '70px' }">
+      <img
+        src="../assets/MyComputerNoFile.svg"
+        class="popup-image"
+        alt="File Folder"
+      />
+      <div
+        class="demo-file"
+        v-for="n in 7"
+        :key="n"
+        :style="{ top: `${140 + n * 40}px`, left: '70px' }"
+      >
         <div class="demo-box">Demo {{ n }}</div>
       </div>
       <button class="popup-close" @click.stop="closeFileWindow">X</button>
@@ -95,7 +110,11 @@
 
     <!-- Audio -->
     <audio ref="clickSound" :src="clickSound" preload="auto"></audio>
-    <audio ref="errorSound" src="../assets/Windows XP Error.wav" preload="auto"></audio>
+    <audio
+      ref="errorSound"
+      src="../assets/sound/Windows XP Error.wav"
+      preload="auto"
+    ></audio>
   </div>
 
   <div v-else class="blue-screen">
@@ -103,35 +122,34 @@
   </div>
 </template>
 
-
 <script>
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import fileIcon from '../assets/File.svg';
-import computerIcon from '../assets/Computer.svg';
-import documentsIcon from '../assets/Documents.svg';
-import clickSoundFile from '../assets/windowsXPClick.wav';
-import errorSoundFile from '../assets/Windows XP Error.wav';
-import blueScreenImage from '../assets/BlueScreen.svg';
+import fileIcon from "../assets/FilesNoText.svg";
+import computerIcon from "../assets/ComputerNoText.svg";
+import documentsIcon from "../assets/DocumentsNoText.svg";
+import clickSoundFile from "../assets/sound/windowsXPClick.wav";
+import errorSoundFile from "../assets/sound/Windows XP Error.wav";
+import blueScreenImage from "../assets/BlueScreen.svg";
 
 export default {
-  name: 'Desktop',
+  name: "Desktop",
   data() {
     return {
       clickSound: clickSoundFile,
       icons: [
-        { src: computerIcon, name: 'Computer', top: 80, left: 40 },
-        { src: fileIcon, name: 'File', top: 200, left: 45 },
-        { src: documentsIcon, name: 'Documents', top: 310, left: 45 }
+        { src: computerIcon, name: "Computer", top: 80, left: 40 },
+        { src: fileIcon, name: "File", top: 200, left: 45 },
+        { src: documentsIcon, name: "Documents", top: 310, left: 45 },
       ],
       linkItems: [
-  { label: 'Google', url: 'https://google.com', top: 150, left: 100 },
-  { label: 'YouTube', url: 'https://youtube.com', top: 150, left: 200 },
-  { label: 'GitHub', url: 'https://github.com', top: 150, left: 300 },
-  { label: 'VueJS', url: 'https://vuejs.org', top: 250, left: 100 },
-  { label: 'OpenAI', url: 'https://openai.com', top: 250, left: 200 }
-],
+        { label: "Ikea", url: "https://www.ikea.com/dk/da/p/landskrona-3-pers-sofa-gunnared-bla-trae-s29393417/", icon: "/logos/Ikea.svg", top: 260, left: 100 },
+        { label: "Nike", url: "https://nikevirtualview.com/needitnow/index.html", icon: "/logos/Nike.svg", top: 260, left: 200 },
+        { label: "Meshy", url: "https://www.meshy.ai/", icon: "/logos/Meshy.svg", top: 260, left: 300 },
+        { label: "ThreeJs", url: "https://threejs.org/", icon: "/logos/Threejs.svg", top: 360, left: 100 },
+        { label: "TensorFlow", url: "https://www.tensorflow.org/js", icon: "/logos/TensorFlow.svg",  top: 360, left: 200 },
+      ],
 
       showComputerWindow: false,
       showLinksWindow: false,
@@ -155,7 +173,7 @@ export default {
 
       errorPopups: [],
       blueScreen: false,
-      blueScreenImage
+      blueScreenImage,
     };
   },
   methods: {
@@ -165,13 +183,13 @@ export default {
     },
     handleIconClick(name) {
       this.playClickSound();
-      if (name === 'Computer') {
+      if (name === "Computer") {
         this.showComputerWindow = true;
       }
     },
     openLink(url) {
-  window.open(url, '_blank');
-},
+      window.open(url, "_blank");
+    },
     openLinksWindow() {
       this.playClickSound();
       this.showLinksWindow = true;
@@ -215,8 +233,8 @@ export default {
       this.isDragging = true;
       this.dragOffset.x = event.clientX - this.popupPosition.left;
       this.dragOffset.y = event.clientY - this.popupPosition.top;
-      document.addEventListener('mousemove', this.onDragging);
-      document.addEventListener('mouseup', this.stopDragging);
+      document.addEventListener("mousemove", this.onDragging);
+      document.addEventListener("mouseup", this.stopDragging);
     },
     onDragging(event) {
       if (this.isDragging) {
@@ -226,8 +244,8 @@ export default {
     },
     stopDragging() {
       this.isDragging = false;
-      document.removeEventListener('mousemove', this.onDragging);
-      document.removeEventListener('mouseup', this.stopDragging);
+      document.removeEventListener("mousemove", this.onDragging);
+      document.removeEventListener("mouseup", this.stopDragging);
     },
 
     // Dragging Links Window
@@ -235,8 +253,8 @@ export default {
       this.isDraggingLinks = true;
       this.dragLinksOffset.x = event.clientX - this.linksPopup.left;
       this.dragLinksOffset.y = event.clientY - this.linksPopup.top;
-      document.addEventListener('mousemove', this.onDraggingLinks);
-      document.addEventListener('mouseup', this.stopDraggingLinks);
+      document.addEventListener("mousemove", this.onDraggingLinks);
+      document.addEventListener("mouseup", this.stopDraggingLinks);
     },
     onDraggingLinks(event) {
       if (this.isDraggingLinks) {
@@ -246,8 +264,8 @@ export default {
     },
     stopDraggingLinks() {
       this.isDraggingLinks = false;
-      document.removeEventListener('mousemove', this.onDraggingLinks);
-      document.removeEventListener('mouseup', this.stopDraggingLinks);
+      document.removeEventListener("mousemove", this.onDraggingLinks);
+      document.removeEventListener("mouseup", this.stopDraggingLinks);
     },
 
     // Dragging File Window
@@ -255,8 +273,8 @@ export default {
       this.isDraggingFile = true;
       this.dragFileOffset.x = event.clientX - this.filePopup.left;
       this.dragFileOffset.y = event.clientY - this.filePopup.top;
-      document.addEventListener('mousemove', this.onDraggingFile);
-      document.addEventListener('mouseup', this.stopDraggingFile);
+      document.addEventListener("mousemove", this.onDraggingFile);
+      document.addEventListener("mouseup", this.stopDraggingFile);
     },
     onDraggingFile(event) {
       if (this.isDraggingFile) {
@@ -266,15 +284,20 @@ export default {
     },
     stopDraggingFile() {
       this.isDraggingFile = false;
-      document.removeEventListener('mousemove', this.onDraggingFile);
-      document.removeEventListener('mouseup', this.stopDraggingFile);
+      document.removeEventListener("mousemove", this.onDraggingFile);
+      document.removeEventListener("mouseup", this.stopDraggingFile);
     },
 
     // Init 3D
     initThree() {
       const canvas = this.$refs.canvas;
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
       camera.position.z = 5;
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
@@ -285,7 +308,7 @@ export default {
       scene.add(light);
 
       const loader = new GLTFLoader();
-      loader.load('/src/assets/windows_xp_desktop_3d.glb', (gltf) => {
+      loader.load("/src/assets/models/windows_xp_desktop_3d.glb", (gltf) => {
         const model = gltf.scene;
         model.position.set(1.06, -0.1, 0);
         model.scale.set(22.33, 16.06, 0.1);
@@ -299,7 +322,7 @@ export default {
       };
       animate();
 
-      window.addEventListener('resize', () => {
+      window.addEventListener("resize", () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -308,17 +331,16 @@ export default {
       this.scene = scene;
       this.camera = camera;
       this.renderer = renderer;
-    }
+    },
   },
   mounted() {
     this.initThree();
   },
   beforeUnmount() {
     cancelAnimationFrame(this.animationId);
-  }
+  },
 };
 </script>
-
 
 <style scoped>
 .desktop {
@@ -351,6 +373,7 @@ canvas {
   height: 80px;
   transition: transform 0.2s;
 }
+
 .file-icon:hover {
   transform: scale(1.1);
 }
@@ -359,7 +382,7 @@ canvas {
   color: white;
   font-size: 0.8rem;
   text-align: center;
-  margin-top: 5px;
+  margin-top: 1px;
   text-shadow: 1px 1px 2px black;
 }
 
@@ -457,6 +480,7 @@ canvas {
   cursor: pointer;
   z-index: 5;
 }
+
 .file-label {
   font-size: 19px;
   color: black;
@@ -485,14 +509,18 @@ canvas {
   cursor: pointer;
   z-index: 6;
 }
+
 .link-icon {
   width: 50px;
   height: 50px;
 }
+
 .link-label {
   font-size: 12px;
   color: black;
   margin-top: 4px;
 }
-
+.rb {
+  border: solid 1px red;
+}
 </style>
