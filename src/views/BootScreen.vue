@@ -51,7 +51,7 @@ export default {
 
       // Load Windows 7 Start animation
       const loader = new GLTFLoader();
-      loader.load("/src/assets/models/windows_7_is_starting.glb", (gltf) => {
+      loader.load("/models/windows_7_is_starting.glb", (gltf) => {
         const startupModel = gltf.scene;
 
         startupModel.scale.set(1, 1, 1);
@@ -97,7 +97,7 @@ export default {
       scene.add(ambientLight);
 
       const loader = new GLTFLoader();
-      loader.load("/src/assets/models/old_computer.glb", (gltf) => {
+      loader.load("/models/old_computer.glb", (gltf) => {
         const model = gltf.scene;
 
         model.position.set(-4.18, -1.75, -0.43);

@@ -1,7 +1,11 @@
 <template>
   <div class="desktop" v-if="!blueScreen">
     <canvas ref="canvas"></canvas>
-
+    <!-- Container for loaded demos -->
+    <div
+      id="canvas-container"
+      style="width: 100%; height: 100%; position: absolute; z-index: 1"
+    ></div>
     <!-- Desktop icons -->
     <div
       v-for="(icon, index) in icons"
@@ -86,15 +90,23 @@
         class="popup-image"
         alt="File Folder"
       />
-      <div
-        class="demo-file"
-        v-for="n in 7"
-        :key="n"
-        :style="{ top: `${140 + n * 40}px`, left: '70px' }"
-      >
-        <div class="demo-box">Demo {{ n }}</div>
+      <!-- Documents folder inside File -->
+      <div class="documents-folder" @click.stop="openDocumentsWindow">
+        <img class="file-icon" src="../assets/Documents.svg" />
       </div>
+
       <button class="popup-close" @click.stop="closeFileWindow">X</button>
+    </div>
+    <!-- Demos shown only if Documents is clicked -->
+    <div
+      v-if="showDocumentsWindow"
+      v-for="(demo, index) in demoItems"
+      :key="index"
+      class="demo-file"
+      :style="{ top: demo.top + 'px', left: demo.left + 'px' }"
+      @click.stop="loadDemo(demo.demoName)"
+    >
+      <div class="demo-box">{{ demo.label }}</div>
     </div>
 
     <!-- Error popups -->
@@ -131,7 +143,7 @@ import computerIcon from "../assets/ComputerNoText.svg";
 import documentsIcon from "../assets/DocumentsNoText.svg";
 import clickSoundFile from "../assets/sound/windowsXPClick.wav";
 import errorSoundFile from "../assets/sound/Windows XP Error.wav";
-import blueScreenImage from "../assets/BlueScreen.svg";
+import blueScreenImage from "../assets/BlueScreenChat.svg";
 
 export default {
   name: "Desktop",
@@ -144,18 +156,93 @@ export default {
         { src: documentsIcon, name: "Documents", top: 310, left: 45 },
       ],
       linkItems: [
-        { label: "Ikea", url: "https://www.ikea.com/dk/da/p/landskrona-3-pers-sofa-gunnared-bla-trae-s29393417/", icon: "/logos/Ikea.svg", top: 260, left: 100 },
-        { label: "Nike", url: "https://nikevirtualview.com/needitnow/index.html", icon: "/logos/Nike.svg", top: 260, left: 200 },
-        { label: "Meshy", url: "https://www.meshy.ai/", icon: "/logos/Meshy.svg", top: 260, left: 300 },
-        { label: "ThreeJs", url: "https://threejs.org/", icon: "/logos/Threejs.svg", top: 360, left: 100 },
-        { label: "TensorFlow", url: "https://www.tensorflow.org/js", icon: "/logos/TensorFlow.svg",  top: 360, left: 200 },
+        {
+          label: "Ikea",
+          url: "https://www.ikea.com/dk/da/p/landskrona-3-pers-sofa-gunnared-bla-trae-s29393417/",
+          icon: "/logos/Ikea.svg",
+          top: 260,
+          left: 100,
+        },
+        {
+          label: "Nike",
+          url: "https://nikevirtualview.com/needitnow/index.html",
+          icon: "/logos/Nike.svg",
+          top: 260,
+          left: 200,
+        },
+        {
+          label: "Meshy",
+          url: "https://www.meshy.ai/",
+          icon: "/logos/Meshy.svg",
+          top: 260,
+          left: 300,
+        },
+        {
+          label: "ThreeJs",
+          url: "https://threejs.org/",
+          icon: "/logos/Threejs.svg",
+          top: 360,
+          left: 100,
+        },
+        {
+          label: "TensorFlow",
+          url: "https://www.tensorflow.org/js",
+          icon: "/logos/TensorFlow.svg",
+          top: 360,
+          left: 200,
+        },
+      ],
+      demoItems: [
+        {
+          label: "🎮 Dino Runner AI",
+          demoName: "dino_runner",
+          top: 480,
+          left: 20,
+        },
+        {
+          label: "💥 Big Bang",
+          demoName: "big_bang",
+          top: 520,
+          left: 20,
+        },
+        {
+          label: "🧊 Mutating Cube",
+          demoName: "demo1_threejs_cube",
+          top: 560,
+          left: 20,
+        },
+        {
+          label: "⚡ Vite Logo Animation",
+          demoName: "demo2_vite_animation",
+          top: 600,
+          left: 20,
+        },
+        {
+          label: "🧠 TensorFlow.js Classifier",
+          demoName: "demo3_tensorflow_classifier",
+          top: 640,
+          left: 20,
+        },
+        {
+          label: "🖐️ Handpose Detection",
+          demoName: "demo4_handpose",
+          top: 680,
+          left: 20,
+        },
+        {
+          label: "🤖 Yuka NPC Walker",
+          demoName: "demo5_yuka_npc_walk",
+          top: 640,
+          left: 20,
+        },
       ],
 
       showComputerWindow: false,
       showLinksWindow: false,
       showFileWindow: false,
+      showDocumentsWindow: false,
       popupPosition: { top: 100, left: 200 },
-      linksPopup: { top: 180, left: 260 },
+      linksPopup: { top: 0, left: 260 },
       filePopup: { top: 240, left: 320 },
 
       isDragging: false,
@@ -170,6 +257,7 @@ export default {
       renderer: null,
       xpDesktopModel: null,
       animationId: null,
+      currentApp: null,
 
       errorPopups: [],
       blueScreen: false,
@@ -198,6 +286,13 @@ export default {
       this.playClickSound();
       this.showFileWindow = true;
     },
+    openDocumentsWindow() {
+      this.playClickSound();
+      this.showDocumentsWindow = true;
+    },
+    closeDocumentsWindow() {
+      this.showDocumentsWindow = false;
+    },
     closeWindow() {
       this.showComputerWindow = false;
       this.triggerErrorPopup();
@@ -207,6 +302,7 @@ export default {
     },
     closeFileWindow() {
       this.showFileWindow = false;
+      this.closeDocumentsWindow();
     },
     triggerErrorPopup() {
       const top = Math.random() * (window.innerHeight - 200);
@@ -308,7 +404,7 @@ export default {
       scene.add(light);
 
       const loader = new GLTFLoader();
-      loader.load("/src/assets/models/windows_xp_desktop_3d.glb", (gltf) => {
+      loader.load("/models/windows_xp_desktop_3d.glb", (gltf) => {
         const model = gltf.scene;
         model.position.set(1.06, -0.1, 0);
         model.scale.set(22.33, 16.06, 0.1);
@@ -332,7 +428,42 @@ export default {
       this.camera = camera;
       this.renderer = renderer;
     },
+    async loadDemo(demoName) {
+      this.showComputerWindow = false;
+      this.showFileWindow = false;
+
+
+      if (this.currentApp && this.currentApp.dispose) {
+        this.currentApp.dispose();
+      }
+
+      const container = document.getElementById("canvas-container");
+      if (container) container.innerHTML = "";
+
+      let module;
+
+      if (demoName === "dino_runner") {
+        module = await import("../demos/dino_runner/dino_runner.js");
+      } else if (demoName === "big_bang") {
+        module = await import("../demos/big_bang/big_bang.js");
+      } else if (demoName === "demo1_threejs_cube") {
+        module = await import("../demos/demo1_threejs_cube/demo1.js");
+      } else if (demoName === "demo2_vite_animation") {
+        module = await import("../demos/demo2_vite_animation/demo2.js");
+      } else if (demoName === "demo3_tensorflow_classifier") {
+        module = await import("../demos/demo3_tensorflow_classifier/demo3.js");
+      } else if (demoName === "demo4_handpose") {
+        module = await import("../demos/demo4_handpose/demo4.js");
+      } else if (demoName === "demo5_yuka_npc_walk") {
+        module = await import("../demos/demo5_yuka_npc_walk/demo5.js");
+      }
+
+      if (module && module.init) {
+        this.currentApp = await module.init("canvas-container");
+      }
+    },
   },
+
   mounted() {
     this.initThree();
   },
@@ -427,6 +558,17 @@ canvas {
   cursor: pointer;
   z-index: 5;
 }
+
+.documents-folder {
+  position: absolute;
+  top: 263px;
+  left: 50px;
+  width: 70px;
+  height: auto;
+  cursor: pointer;
+  z-index: 5;
+}
+
 .links-label {
   font-size: 19px;
   color: black;
@@ -492,12 +634,13 @@ canvas {
   position: absolute;
   z-index: 10;
 }
+
 .demo-box {
-  width: 120px;
+  width: 230px;
   padding: 10px;
   background: #e0e0e0;
   border: 1px solid #aaa;
-  text-align: center;
+  text-align: start;
   cursor: pointer;
   font-weight: bold;
 }
@@ -515,6 +658,10 @@ canvas {
   height: 50px;
 }
 
+.document-folder {
+  width: 80px;
+  height: 80px;
+}
 .link-label {
   font-size: 12px;
   color: black;
