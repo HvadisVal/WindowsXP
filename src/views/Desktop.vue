@@ -154,6 +154,12 @@ export default {
         { src: computerIcon, name: "Computer", top: 80, left: 40 },
         { src: fileIcon, name: "File", top: 200, left: 45 },
         { src: documentsIcon, name: "Documents", top: 310, left: 45 },
+        {
+          src: "src/assets/Cactus.svg",
+          name: "JumpBoy",
+          top: 420,
+          left: 45,
+        },
       ],
       linkItems: [
         {
@@ -193,27 +199,10 @@ export default {
         },
       ],
       demoItems: [
-        {
-          label: "🎮 Dino Runner AI",
-          demoName: "dino_runner",
-          top: 480,
-          left: 20,
-        },
-        {
-          label: "💥 Big Bang",
-          demoName: "big_bang",
-          top: 520,
-          left: 20,
-        },
+       
         {
           label: "🧊 Mutating Cube",
           demoName: "demo1_threejs_cube",
-          top: 560,
-          left: 20,
-        },
-        {
-          label: "⚡ Vite Logo Animation",
-          demoName: "demo2_vite_animation",
           top: 600,
           left: 20,
         },
@@ -232,7 +221,7 @@ export default {
         {
           label: "🤖 Yuka NPC Walker",
           demoName: "demo5_yuka_npc_walk",
-          top: 640,
+          top: 720,
           left: 20,
         },
       ],
@@ -273,6 +262,9 @@ export default {
       this.playClickSound();
       if (name === "Computer") {
         this.showComputerWindow = true;
+      } else if (name === "JumpBoy") {
+        this.loadDemo("dino_runner");
+        // assuming this is your jumping game
       }
     },
     openLink(url) {
@@ -431,7 +423,6 @@ export default {
     async loadDemo(demoName) {
       this.showComputerWindow = false;
       this.showFileWindow = false;
-
 
       if (this.currentApp && this.currentApp.dispose) {
         this.currentApp.dispose();

@@ -5,7 +5,7 @@ export async function init(containerId) {
   const container = document.getElementById(containerId);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x6e6b6b);
+  scene.background = null
 
   const camera = new THREE.PerspectiveCamera(
     75,
@@ -15,7 +15,7 @@ export async function init(containerId) {
   );
   camera.position.z = 5;
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.style.overflow = "hidden";
   container.appendChild(renderer.domElement);
