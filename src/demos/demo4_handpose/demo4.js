@@ -23,8 +23,7 @@ export async function init(containerId) {
   container.appendChild(video);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x202020);
-
+  scene.background = null;
   const camera = new THREE.PerspectiveCamera(
     75,
     container.clientWidth / container.clientHeight,
@@ -33,7 +32,7 @@ export async function init(containerId) {
   );
   camera.position.z = 5;
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 

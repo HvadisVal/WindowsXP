@@ -5,13 +5,13 @@ export async function init(containerId) {
   const container = document.getElementById(containerId);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x222222);
+  scene.background = null;
 
   const camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
   camera.position.set(15, 15, 15);
   camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 
