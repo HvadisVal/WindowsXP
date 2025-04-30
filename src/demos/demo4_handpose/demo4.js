@@ -18,6 +18,38 @@ export async function init(containerId) {
   handStatus.style.transition = 'opacity 0.5s';
   container.appendChild(handStatus);
 
+  // Toggleable demo.gif and button
+  const gif = document.createElement('img');
+  gif.src = '/demo.gif';
+  gif.style.position = 'absolute';
+  gif.style.bottom = '50px';
+  gif.style.right = '10px';
+  gif.style.width = '320px';
+  gif.style.zIndex = '10';
+  gif.style.display = 'none';
+  container.appendChild(gif);
+
+  const gifToggleBtn = document.createElement('button');
+  gifToggleBtn.textContent = 'Show Demo';
+  gifToggleBtn.style.position = 'absolute';
+  gifToggleBtn.style.bottom = '10px';
+  gifToggleBtn.style.right = '10px';
+  gifToggleBtn.style.zIndex = '10';
+  gifToggleBtn.style.padding = '8px 12px';
+  gifToggleBtn.style.background = '#333';
+  gifToggleBtn.style.color = '#fff';
+  gifToggleBtn.style.border = 'none';
+  gifToggleBtn.style.borderRadius = '5px';
+  gifToggleBtn.style.cursor = 'pointer';
+  container.appendChild(gifToggleBtn);
+
+  let gifVisible = false;
+  gifToggleBtn.addEventListener('click', () => {
+    gifVisible = !gifVisible;
+    gif.style.display = gifVisible ? 'block' : 'none';
+    gifToggleBtn.textContent = gifVisible ? 'Hide' : 'Show Hands Keypoints';
+  });
+
   const video = document.createElement('video');
   video.style.display = 'none'; // hide webcam video
   container.appendChild(video);
