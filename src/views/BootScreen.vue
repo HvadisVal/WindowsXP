@@ -5,7 +5,7 @@
     <!-- Power Button (SVG) -->
     <img
       v-if="!booting"
-      src="../assets/PowerButton.svg"
+      src="/assets/PowerButton.svg"
       alt="Power Button"
       class="power-button"
       @click="startComputer"
@@ -19,7 +19,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 // import { GUI } from "dat.gui"; // ✅ Bring back GUI
-import startupSoundFile from "../assets/sound/windowsXPStartup.wav";
+import startupSoundFile from "/assets/sound/windowsXPStartup.wav";
 
 export default {
   name: "BootScreen",

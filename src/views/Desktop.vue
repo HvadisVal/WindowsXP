@@ -30,20 +30,20 @@
     >
       <div class="popup-drag-zone"></div>
       <img
-        src="../assets/MyComputerWithFiles.svg"
+        src="/assets/MyComputerWithFiles.svg"
         class="popup-image"
         alt="My Computer"
       />
 
       <!-- Links folder inside -->
       <div class="links-folder" @click.stop="openLinksWindow">
-        <img src="../assets/Links.svg" />
+        <img src="/assets/Links.svg" />
         <p class="links-label">Links</p>
       </div>
 
       <!-- File folder inside -->
       <div class="file-folder" @click.stop="openFileWindow">
-        <img src="../assets/File.svg" />
+        <img src="/assets/File.svg" />
       </div>
 
       <button class="popup-close" @click.stop="closeWindow">X</button>
@@ -58,7 +58,7 @@
     >
       <div class="popup-drag-zone"></div>
       <img
-        src="../assets/MyComputerNoFile.svg"
+        src="/assets/MyComputerNoFile.svg"
         alt="Links Folder Opened"
         class="popup-image"
       />
@@ -87,7 +87,7 @@
 >
   <div class="popup-drag-zone"></div>
   <img
-    src="../assets/MyComputerNoFile.svg"
+    src="/assets/MyComputerNoFile.svg"
     class="popup-image"
     alt="File Folder"
   />
@@ -101,7 +101,7 @@
 
   <!-- Documents folder inside File -->
   <div class="documents-folder" @click.stop="openDocumentsWindow">
-    <img class="file-icon" src="../assets/Documents.svg" />
+    <img class="file-icon" src="/assets/Documents.svg" />
   </div>
    <!-- Demos shown only if Documents is clicked -->
    <div
@@ -128,7 +128,7 @@
       class="error-popup"
       :style="{ top: error.top + 'px', left: error.left + 'px' }"
     >
-      <img src="../assets/ErrorFail.svg" class="error-img" />
+      <img src="/assets/ErrorFail.svg" class="error-img" />
       <button class="error-ok" @click="duplicateErrors">OK</button>
     </div>
 
@@ -136,7 +136,7 @@
     <audio ref="clickSound" :src="clickSound" preload="auto"></audio>
     <audio
       ref="errorSound"
-      src="../assets/sound/Windows XP Error.wav"
+      src="/assets/sound/Windows XP Error.wav"
       preload="auto"
     ></audio>
   </div>
@@ -150,12 +150,12 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import fileIcon from "../assets/FilesNoText.svg";
-import computerIcon from "../assets/ComputerNoText.svg";
-import documentsIcon from "../assets/DocumentsNoText.svg";
-import clickSoundFile from "../assets/sound/windowsXPClick.wav";
-import errorSoundFile from "../assets/sound/Windows XP Error.wav";
-import blueScreenImage from "../assets/BlueScreenChat.svg";
+import fileIcon from "/assets/FilesNoText.svg";
+import computerIcon from "/assets/ComputerNoText.svg";
+import documentsIcon from "/assets/DocumentsNoText.svg";
+import clickSoundFile from "/assets/sound/windowsXPClick.wav";
+import errorSoundFile from "/assets/sound/Windows XP Error.wav";
+import blueScreenImage from "/assets/BlueScreenChat.svg";
 
 export default {
   name: "Desktop",
@@ -167,7 +167,7 @@ export default {
         { src: fileIcon, name: "File", top: 200, left: 45 },
         { src: documentsIcon, name: "Documents", top: 310, left: 45 },
         {
-          src: "src/assets/Cactus.svg",
+          src: "assets/Cactus.svg",
           name: "JumpBoy",
           top: 420,
           left: 45,
@@ -410,8 +410,8 @@ export default {
       const loader = new GLTFLoader();
       loader.load("/models/windows_xp_desktop_3d.glb", (gltf) => {
         const model = gltf.scene;
-        model.position.set(1.06, -0.1, 0);
-        model.scale.set(22.33, 16.06, 0.1);
+        model.position.set(1.06, 0, 0);
+        model.scale.set(23, 16.06, 0.1);
         scene.add(model);
         this.xpDesktopModel = model;
       });

@@ -37,8 +37,9 @@ export async function init(containerId) {
   const scoreElement = document.createElement('div');
   scoreElement.style.position = 'absolute';
   scoreElement.style.top = '20px';
-  scoreElement.style.left = '20px';
-  scoreElement.style.color = 'white';
+  scoreElement.style.left = '50%';
+  scoreElement.style.transform = 'translateX(-50%)';
+  scoreElement.style.color = 'black';
   scoreElement.style.fontSize = '24px';
   scoreElement.innerText = 'Score: 0';
   container.appendChild(scoreElement);
