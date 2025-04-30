@@ -177,7 +177,7 @@ canvas {
 .power-button {
   position: absolute;
   top: 79.5%;
-  left: 68.5%;
+  left: 70.6%;
   width: 20px; /* adjust if needed */
   height: 100px;
   transform: translate(-50%, -50%);

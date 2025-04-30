@@ -6,7 +6,7 @@ export async function init(containerId) {
   const title = document.createElement('div');
   title.id = 'big-bang-title';
   title.innerHTML = `
-    <h1>AI & 3D</h1>
+    <h1>AI & WebGL</h1>
     <p style="font-size:25px; margin-top:-15px;">Welcome to the future of Web 3D</p>
     <p style="font-size:16px; margin-top:10px;">Valeria & Jónína</p>
   `;

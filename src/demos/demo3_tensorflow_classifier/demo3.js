@@ -24,6 +24,9 @@ export async function init(containerId) {
     img.style.maxWidth = '300px';
     img.style.display = 'none';
     img.style.marginTop = '10px';
+    //center image
+    img.style.marginLeft = 'auto';
+    img.style.marginRight = 'auto';
     wrapper.appendChild(img);
   
     const resultDiv = document.createElement('div');

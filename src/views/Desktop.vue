@@ -78,27 +78,33 @@
     </div>
 
     <!-- File popup with placeholder demos -->
-    <div
-      v-if="showFileWindow"
-      class="popup-group"
-      :style="{ top: filePopup.top + 'px', left: filePopup.left + 'px' }"
-      @mousedown="startDraggingFile"
-    >
-      <div class="popup-drag-zone"></div>
-      <img
-        src="../assets/MyComputerNoFile.svg"
-        class="popup-image"
-        alt="File Folder"
-      />
-      <!-- Documents folder inside File -->
-      <div class="documents-folder" @click.stop="openDocumentsWindow">
-        <img class="file-icon" src="../assets/Documents.svg" />
-      </div>
+    <!-- File popup with embedded demo container -->
+<div
+  v-if="showFileWindow"
+  class="popup-group"
+  :style="{ top: filePopup.top + 'px', left: filePopup.left + 'px' }"
+  @mousedown="startDraggingFile"
+>
+  <div class="popup-drag-zone"></div>
+  <img
+    src="../assets/MyComputerNoFile.svg"
+    class="popup-image"
+    alt="File Folder"
+  />
 
-      <button class="popup-close" @click.stop="closeFileWindow">X</button>
-    </div>
-    <!-- Demos shown only if Documents is clicked -->
-    <div
+  <!-- Demo mount container -->
+  <div
+    v-if="currentApp"
+    id="canvas-container"
+    style="position: absolute; top: 125px; left: 0; width: 100%; height: calc(100% - 125px); z-index: 10;"
+  ></div>
+
+  <!-- Documents folder inside File -->
+  <div class="documents-folder" @click.stop="openDocumentsWindow">
+    <img class="file-icon" src="../assets/Documents.svg" />
+  </div>
+   <!-- Demos shown only if Documents is clicked -->
+   <div
       v-if="showDocumentsWindow"
       v-for="(demo, index) in demoItems"
       :key="index"
@@ -108,6 +114,12 @@
     >
       <div class="demo-box">{{ demo.label }}</div>
     </div>
+
+  <button class="popup-close" @click.stop="closeFileWindow">X</button>
+</div>
+
+
+   
 
     <!-- Error popups -->
     <div
@@ -178,7 +190,7 @@ export default {
         },
         {
           label: "Meshy",
-          url: "https://www.meshy.ai/",
+          url: "https://www.meshy.ai/workspace",
           icon: "/logos/Meshy.svg",
           top: 260,
           left: 300,
@@ -203,26 +215,26 @@ export default {
         {
           label: "🧊 Mutating Cube",
           demoName: "demo1_threejs_cube",
-          top: 600,
-          left: 20,
+          top: 280,
+          left: 200,
         },
         {
           label: "🧠 TensorFlow.js Classifier",
           demoName: "demo3_tensorflow_classifier",
-          top: 640,
-          left: 20,
+          top: 320,
+          left: 200,
         },
         {
           label: "🖐️ Handpose Detection",
           demoName: "demo4_handpose",
-          top: 680,
-          left: 20,
+          top: 360,
+          left: 200,
         },
         {
           label: "🤖 Yuka NPC Walker",
           demoName: "demo5_yuka_npc_walk",
-          top: 720,
-          left: 20,
+          top: 400,
+          left: 200,
         },
       ],
 
@@ -422,7 +434,7 @@ export default {
     },
     async loadDemo(demoName) {
       this.showComputerWindow = false;
-      this.showFileWindow = false;
+     
 
       if (this.currentApp && this.currentApp.dispose) {
         this.currentApp.dispose();
