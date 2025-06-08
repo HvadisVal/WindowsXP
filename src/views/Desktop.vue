@@ -211,7 +211,6 @@ export default {
         },
       ],
       demoItems: [
-       
         {
           label: "🧊 Mutating Cube",
           demoName: "demo1_threejs_cube",
@@ -231,9 +230,15 @@ export default {
           left: 200,
         },
         {
+          label: " 💡Hue Gesture",
+          demoName: "gesture_control",
+          top: 400,
+          left: 200,
+        },
+        {
           label: "🤖 Yuka NPC Walker",
           demoName: "demo5_yuka_npc_walk",
-          top: 400,
+          top: 440,
           left: 200,
         },
       ],
@@ -459,6 +464,8 @@ export default {
         module = await import("../demos/demo4_handpose/demo4.js");
       } else if (demoName === "demo5_yuka_npc_walk") {
         module = await import("../demos/demo5_yuka_npc_walk/demo5.js");
+      } else if (demoName === "gesture_control") {
+        module = await import("../demos/hue_gesture/gesture_control.js");
       }
 
       if (module && module.init) {
