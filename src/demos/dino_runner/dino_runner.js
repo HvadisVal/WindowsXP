@@ -1,11 +1,13 @@
+// src/dino_runner/dino_runner.js
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { getHandStatus, startHandTracking } from '../hue_gesture/gestureController.js';
 
 export async function init(containerId) {
   const container = document.getElementById(containerId);
 
   const scene = new THREE.Scene();
-  scene.background = null
+  scene.background = null;
 
   const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
   camera.position.set(0, 3, 7);
@@ -29,11 +31,8 @@ export async function init(containerId) {
   let score = 0;
 
   const loader = new GLTFLoader();
-
-  // Animations
   let runAnimation, jumpAnimation, deathAnimation;
 
-  // Score Display
   const scoreElement = document.createElement('div');
   scoreElement.style.position = 'absolute';
   scoreElement.style.top = '20px';
@@ -44,13 +43,11 @@ export async function init(containerId) {
   scoreElement.innerText = 'Score: 0';
   container.appendChild(scoreElement);
 
-  // Preload all GLBs
   const idleGLB = await loader.loadAsync('/models/idle.glb');
   const runGLB = await loader.loadAsync('/models/running.glb');
   const jumpGLB = await loader.loadAsync('/models/jumping.glb');
   const deathGLB = await loader.loadAsync('/models/standing death.glb');
 
-  // Setup player
   player = idleGLB.scene;
   scene.add(player);
   player.position.set(-3, 0, 0);
@@ -61,10 +58,8 @@ export async function init(containerId) {
   runAnimation = runGLB.animations[0];
   jumpAnimation = jumpGLB.animations[0];
   deathAnimation = deathGLB.animations[0];
-
   idleAction.play();
 
-  // Load cactus
   loader.load('/models/cactus.glb', (gltf) => {
     cactus = gltf.scene;
     scene.add(cactus);
@@ -72,7 +67,6 @@ export async function init(containerId) {
     cactus.visible = false;
   });
 
-  // Start Button
   const startButton = document.createElement('button');
   startButton.innerText = 'Start';
   startButton.style.position = 'absolute';
@@ -98,6 +92,11 @@ export async function init(containerId) {
     cactus.position.set(10, 0, 0);
   });
 
+  const video = document.createElement('video');
+  video.style.display = 'none';
+  document.body.appendChild(video);
+  startHandTracking(video);
+
   function animate() {
     requestAnimationFrame(animate);
 
@@ -108,24 +107,22 @@ export async function init(containerId) {
       if (cactus) {
         cactus.position.x -= delta * 5;
 
-        if (!isJumping && cactus.position.x < 2 && cactus.position.x > 0) {
-          isJumping = true;
-          jumpVelocity = 6;
-
-          // Switch to jumping animation
-          mixer.stopAllAction();
-          const jumpAction = mixer.clipAction(jumpAnimation);
-          jumpAction.setLoop(THREE.LoopOnce);
-          jumpAction.clampWhenFinished = true;
-          jumpAction.play();
-        }
-
         if (cactus.position.x < -10) {
           cactus.position.x = 10 + Math.random() * 5;
-
           score++;
           scoreElement.innerText = `Score: ${score}`;
         }
+      }
+
+      if (!isJumping && getHandStatus()) {
+        isJumping = true;
+        jumpVelocity = 6;
+
+        mixer.stopAllAction();
+        const jumpAction = mixer.clipAction(jumpAnimation);
+        jumpAction.setLoop(THREE.LoopOnce);
+        jumpAction.clampWhenFinished = true;
+        jumpAction.play();
       }
 
       if (isJumping) {
@@ -136,14 +133,12 @@ export async function init(containerId) {
           player.position.y = 0;
           isJumping = false;
 
-          // Switch back to running animation
           mixer.stopAllAction();
           const runAction = mixer.clipAction(runAnimation);
           runAction.play();
         }
       }
 
-      // Check collision
       if (cactus && player) {
         const playerBox = new THREE.Box3().setFromObject(player);
         const cactusBox = new THREE.Box3().setFromObject(cactus);
@@ -164,14 +159,12 @@ export async function init(containerId) {
     isRunning = false;
     isDead = true;
 
-    // Play death animation
     mixer.stopAllAction();
     const deathAction = mixer.clipAction(deathAnimation);
     deathAction.setLoop(THREE.LoopOnce);
     deathAction.clampWhenFinished = true;
     deathAction.play();
 
-    // After 2 seconds show Game Over
     setTimeout(() => {
       alert(`💀 Game Over! Final Score: ${score}`);
       window.location.reload();
