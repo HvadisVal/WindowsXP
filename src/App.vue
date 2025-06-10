@@ -18,7 +18,5 @@ body {
   font-weight: 400;
   letter-spacing: 1px;
 }
-p {
-  font-size: 25px;
-}
+
 </style>
