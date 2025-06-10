@@ -28,15 +28,15 @@ async function initAudioModel(setActionCallback) {
       const word = words[highestScoreIndex].toLowerCase();
 
       if (word === "one clapp" && currentState !== "on") {
-        console.log("🟢 Light ON");
+        console.log("🟢 Disco Mode");
         currentState = "on";
         lastCommandTime = now;
-        setActionCallback("on-white");
+        setActionCallback("disco");
       } else if (word === "two clapp" && currentState !== "off") {
-        console.log("🔴 Light OFF");
+        console.log("🔴 Stopping Disco Mode");
         currentState = "off";
         lastCommandTime = now;
-        setActionCallback("off");
+        setActionCallback("stopDisco");
       }
     },
     {

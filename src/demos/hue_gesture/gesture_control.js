@@ -4,6 +4,7 @@ import { turnOn, turnOff, setLightState } from "../../services/hueService";
 import { detectPowerGesture } from "./power_gestures.js";
 import { detectColorGesture } from "./color_gestures.js";
 import { initAudioModel, stopAudioModel } from "./clap_control.js";
+import { cycleColor } from "./common.js";
 
 const video = document.createElement("video");
 video.style.position = "fixed";
@@ -48,6 +49,7 @@ controlsContainer.appendChild(toggleModeBtn);
 
 let audioModelActive = false;
 let recognizerInstance = null;
+let discoInterval = null;
 let lastState = null;
 let model = await handpose.load();
 let animationFrameId = null;
@@ -81,9 +83,21 @@ toggleModeBtn.onclick = async () => {
             colormode: "hs",
           });
         }
-      } else if (action === "off") {
-        console.log("🔴 Light OFF triggered by voice");
+      } else if (action === "stopDisco") {
+        console.log("🛑 Disco mode stopped");
+        if (discoInterval) {
+          clearInterval(discoInterval);
+          discoInterval = null;
+        }
         await turnOff();
+      } else if (action === "disco") {
+        console.log("🌈 Disco mode triggered by voice");
+        await turnOn();
+        let hue = 0;
+        discoInterval = setInterval(async () => {
+          hue = (hue + 5000) % 65535;
+          await cycleColor(hue);
+        }, 300);
       }
     });
   } else {
