@@ -30,7 +30,7 @@
     >
       <div class="popup-drag-zone"></div>
       <img
-        src="/assets/MyComputerWithFiles.svg"
+        src="/assets/MyComputer.svg"
         class="popup-image"
         alt="My Computer"
       />
@@ -43,7 +43,8 @@
 
       <!-- File folder inside -->
       <div class="file-folder" @click.stop="openFileWindow">
-        <img src="/assets/File.svg" />
+        <img src="/assets/FilesNoText.svg" />
+        <p class="file-label">Demos</p>
       </div>
 
       <button class="popup-close" @click.stop="closeWindow">X</button>
@@ -162,7 +163,7 @@ export default {
     return {
       clickSound: clickSoundFile,
       icons: [
-        { src: computerIcon, name: "Computer", top: 80, left: 40 },
+        { src: computerIcon, name: "My Computer", top: 80, left: 40 },
         { src: fileIcon, name: "File", top: 200, left: 45 },
         { src: documentsIcon, name: "Documents", top: 310, left: 45 },
         {
@@ -274,7 +275,7 @@ export default {
     },
     handleIconClick(name) {
       this.playClickSound();
-      if (name === "Computer") {
+      if (name === "My Computer") {
         this.showComputerWindow = true;
       } else if (name === "JumpBoy") {
         this.loadDemo("dino_runner");
@@ -505,9 +506,10 @@ canvas {
 }
 
 .file-icon {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   transition: transform 0.2s;
+
 }
 
 .file-icon:hover {

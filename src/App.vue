@@ -16,7 +16,7 @@ body {
   text-align: center;
   font-family: 'segoe ui', sans-serif;
   font-weight: 400;
-  letter-spacing: 1px;
+  letter-spacing: 0,5px;
 }
 
 </style>
