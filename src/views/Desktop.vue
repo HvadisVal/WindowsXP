@@ -30,7 +30,7 @@
     >
       <div class="popup-drag-zone"></div>
       <img
-        src="/assets/MyComputerWithFiles.svg"
+        src="/assets/MyComputer.svg"
         class="popup-image"
         alt="My Computer"
       />
@@ -43,7 +43,8 @@
 
       <!-- File folder inside -->
       <div class="file-folder" @click.stop="openFileWindow">
-        <img src="/assets/File.svg" />
+        <img src="/assets/FilesNoText.svg" />
+        <p class="file-label">Demos</p>
       </div>
 
       <button class="popup-close" @click.stop="closeWindow">X</button>
@@ -79,47 +80,46 @@
 
     <!-- File popup with placeholder demos -->
     <!-- File popup with embedded demo container -->
-<div
-  v-if="showFileWindow"
-  class="popup-group"
-  :style="{ top: filePopup.top + 'px', left: filePopup.left + 'px' }"
-  @mousedown="startDraggingFile"
->
-  <div class="popup-drag-zone"></div>
-  <img
-    src="/assets/MyComputerNoFile.svg"
-    class="popup-image"
-    alt="File Folder"
-  />
-
-  <!-- Demo mount container -->
-  <div
-    v-if="currentApp"
-    id="canvas-container"
-    style="position: absolute; top: 125px; left: 0; width: 100%; height: calc(100% - 125px); z-index: 10;"
-  ></div>
-
-  <!-- Documents folder inside File -->
-  <div class="documents-folder" @click.stop="openDocumentsWindow">
-    <img class="file-icon" src="/assets/Documents.svg" />
-  </div>
-   <!-- Demos shown only if Documents is clicked -->
-   <div
-      v-if="showDocumentsWindow"
-      v-for="(demo, index) in demoItems"
-      :key="index"
-      class="demo-file"
-      :style="{ top: demo.top + 'px', left: demo.left + 'px' }"
-      @click.stop="loadDemo(demo.demoName)"
+    <div
+      v-if="showFileWindow"
+      class="popup-group"
+      :style="{ top: filePopup.top + 'px', left: filePopup.left + 'px' }"
+      @mousedown="startDraggingFile"
     >
-      <div class="demo-box">{{ demo.label }}</div>
+      <div class="popup-drag-zone"></div>
+      <img
+        src="/assets/MyComputerNoFile.svg"
+        class="popup-image"
+        alt="File Folder"
+      />
+
+      <!-- Demo mount container -->
+      <div
+        v-if="currentApp"
+        id="canvas-container"
+        style="
+          position: absolute;
+          top: 125px;
+          left: 0;
+          width: 100%;
+          height: calc(100% - 125px);
+          z-index: 10;
+        "
+      ></div>
+      <!-- Demos shown only if Documents is clicked -->
+      <div
+        v-for="(demo, index) in demoItems"
+        :key="index"
+        class="demo-file r"
+        :style="{ top: demo.top + 'px', left: demo.left + 'px' }"
+        @click.stop="loadDemo(demo.demoName)"
+      >
+        <img :src="demo.icon" alt="Demo Icon" class="demo-icon" />
+        <p class="demo-box">{{ demo.label }}</p>
+      </div>
+
+      <button class="popup-close" @click.stop="closeFileWindow">X</button>
     </div>
-
-  <button class="popup-close" @click.stop="closeFileWindow">X</button>
-</div>
-
-
-   
 
     <!-- Error popups -->
     <div
@@ -163,7 +163,7 @@ export default {
     return {
       clickSound: clickSoundFile,
       icons: [
-        { src: computerIcon, name: "Computer", top: 80, left: 40 },
+        { src: computerIcon, name: "My Computer", top: 80, left: 40 },
         { src: fileIcon, name: "File", top: 200, left: 45 },
         { src: documentsIcon, name: "Documents", top: 310, left: 45 },
         {
@@ -212,34 +212,32 @@ export default {
       ],
       demoItems: [
         {
-          label: "🧊 Mutating Cube",
+          label: "Mutating Cube",
           demoName: "demo1_threejs_cube",
-          top: 280,
-          left: 200,
+          icon: "/icons/UimCube.svg",
+          top: 270,
+          left: 50,
         },
         {
-          label: "🧠 TensorFlow.js Classifier",
+          label: "Classifier",
           demoName: "demo3_tensorflow_classifier",
-          top: 320,
-          left: 200,
+          icon: "/logos/TensorFlow.svg",
+          top: 270,
+          left: 230,
         },
         {
-          label: "🖐️ Handpose Detection",
+          label: "Handpose",
           demoName: "demo4_handpose",
-          top: 360,
-          left: 200,
+          icon: "/icons/Hand.svg",
+          top: 270,
+          left: 360,
         },
         {
-          label: " 💡Hue Gesture",
+          label: "Hue Gesture",
           demoName: "gesture_control",
-          top: 400,
-          left: 200,
-        },
-        {
-          label: "🤖 Yuka NPC Walker",
-          demoName: "demo5_yuka_npc_walk",
-          top: 440,
-          left: 200,
+          icon: "/icons/FlatLightBulb.svg",
+          top: 270,
+          left: 490,
         },
       ],
 
@@ -277,11 +275,10 @@ export default {
     },
     handleIconClick(name) {
       this.playClickSound();
-      if (name === "Computer") {
+      if (name === "My Computer") {
         this.showComputerWindow = true;
       } else if (name === "JumpBoy") {
         this.loadDemo("dino_runner");
-        // assuming this is your jumping game
       }
     },
     openLink(url) {
@@ -439,7 +436,6 @@ export default {
     },
     async loadDemo(demoName) {
       this.showComputerWindow = false;
-     
 
       if (this.currentApp && this.currentApp.dispose) {
         this.currentApp.dispose();
@@ -510,9 +506,10 @@ canvas {
 }
 
 .file-icon {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   transition: transform 0.2s;
+
 }
 
 .file-icon:hover {
@@ -641,18 +638,24 @@ canvas {
 }
 
 .demo-file {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: absolute;
+  cursor: pointer;
   z-index: 10;
 }
 
+.demo-icon {
+  width: 50px;
+  height: 50px;
+  transition: transform 0.2s;
+}
+
 .demo-box {
-  width: 230px;
-  padding: 10px;
-  background: #e0e0e0;
-  border: 1px solid #aaa;
-  text-align: start;
-  cursor: pointer;
-  font-weight: bold;
+  text-align: center;
+  margin: 0;
 }
 
 .link-item {

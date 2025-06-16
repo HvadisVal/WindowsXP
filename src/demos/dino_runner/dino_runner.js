@@ -1,7 +1,11 @@
 // src/dino_runner/dino_runner.js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { getHandStatus, startHandTracking } from '../hue_gesture/gestureController.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import {
+  getHandStatus,
+  startHandTracking,
+} from "../dino_runner/gesture_controller";
+import { setLightState } from "../../services/hueService";
 
 export async function init(containerId) {
   const container = document.getElementById(containerId);
@@ -9,7 +13,12 @@ export async function init(containerId) {
   const scene = new THREE.Scene();
   scene.background = null;
 
-  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000
+  );
   camera.position.set(0, 3, 7);
   camera.lookAt(0, 1, 0);
 
@@ -33,24 +42,24 @@ export async function init(containerId) {
   const loader = new GLTFLoader();
   let runAnimation, jumpAnimation, deathAnimation;
 
-  const scoreElement = document.createElement('div');
-  scoreElement.style.position = 'absolute';
-  scoreElement.style.top = '20px';
-  scoreElement.style.left = '50%';
-  scoreElement.style.transform = 'translateX(-50%)';
-  scoreElement.style.color = 'black';
-  scoreElement.style.fontSize = '24px';
-  scoreElement.innerText = 'Score: 0';
+  const scoreElement = document.createElement("div");
+  scoreElement.style.position = "absolute";
+  scoreElement.style.top = "20px";
+  scoreElement.style.left = "50%";
+  scoreElement.style.transform = "translateX(-50%)";
+  scoreElement.style.color = "black";
+  scoreElement.style.fontSize = "24px";
+  scoreElement.innerText = "Score: 0";
   container.appendChild(scoreElement);
 
-  const idleGLB = await loader.loadAsync('/models/idle.glb');
-  const runGLB = await loader.loadAsync('/models/running.glb');
-  const jumpGLB = await loader.loadAsync('/models/jumping.glb');
-  const deathGLB = await loader.loadAsync('/models/standing death.glb');
+  const idleGLB = await loader.loadAsync("/models/idle.glb");
+  const runGLB = await loader.loadAsync("/models/running.glb");
+  const jumpGLB = await loader.loadAsync("/models/jumping.glb");
+  const deathGLB = await loader.loadAsync("/models/standing death.glb");
 
   player = idleGLB.scene;
   scene.add(player);
-  player.position.set(-3, 0, 0);
+  player.position.set(-3, -1, 0);
   player.rotation.y = Math.PI / 2;
 
   mixer = new THREE.AnimationMixer(player);
@@ -60,28 +69,28 @@ export async function init(containerId) {
   deathAnimation = deathGLB.animations[0];
   idleAction.play();
 
-  loader.load('/models/cactus.glb', (gltf) => {
+  loader.load("/models/cactus.glb", (gltf) => {
     cactus = gltf.scene;
     scene.add(cactus);
-    cactus.position.set(10, 0, 0);
+    cactus.position.set(10, -2, 0);
     cactus.visible = false;
   });
 
-  const startButton = document.createElement('button');
-  startButton.innerText = 'Start';
-  startButton.style.position = 'absolute';
-  startButton.style.top = '500px';
-  startButton.style.left = '50%';
-  startButton.style.transform = 'translateX(-50%)';
-  startButton.style.padding = '10px 20px';
-  startButton.style.fontSize = '1.2rem';
-  startButton.style.cursor = 'pointer';
+  const startButton = document.createElement("button");
+  startButton.innerText = "Start";
+  startButton.style.position = "absolute";
+  startButton.style.top = "500px";
+  startButton.style.left = "50%";
+  startButton.style.transform = "translateX(-50%)";
+  startButton.style.padding = "10px 20px";
+  startButton.style.fontSize = "1.2rem";
+  startButton.style.cursor = "pointer";
   container.appendChild(startButton);
 
-  startButton.addEventListener('click', () => {
+  startButton.addEventListener("click", () => {
     if (!player) return;
 
-    startButton.style.display = 'none';
+    startButton.style.display = "none";
     isRunning = true;
 
     mixer.stopAllAction();
@@ -89,11 +98,11 @@ export async function init(containerId) {
     runAction.play();
 
     cactus.visible = true;
-    cactus.position.set(10, 0, 0);
+    cactus.position.set(10, -1, 0);
   });
 
-  const video = document.createElement('video');
-  video.style.display = 'none';
+  const video = document.createElement("video");
+  video.style.display = "none";
   document.body.appendChild(video);
   startHandTracking(video);
 
@@ -111,6 +120,16 @@ export async function init(containerId) {
           cactus.position.x = 10 + Math.random() * 5;
           score++;
           scoreElement.innerText = `Score: ${score}`;
+          setLightState({ on: true, bri: 254, hue: 20662, sat: 225 }); // green on
+          setTimeout(() => {
+            setLightState({ on: false });
+          }, 200);
+          setTimeout(() => {
+            setLightState({ on: true, bri: 254, hue: 20662, sat: 225 });
+          }, 400);
+          setTimeout(() => {
+            setLightState({ on: false });
+          }, 600);
         }
       }
 
@@ -129,8 +148,9 @@ export async function init(containerId) {
         player.position.y += jumpVelocity * delta;
         jumpVelocity -= 9.8 * delta;
 
-        if (player.position.y <= 0) {
-          player.position.y = 0;
+        const groundY = -1;
+        if (player.position.y <= groundY) {
+          player.position.y = groundY;
           isJumping = false;
 
           mixer.stopAllAction();
@@ -165,6 +185,11 @@ export async function init(containerId) {
     deathAction.clampWhenFinished = true;
     deathAction.play();
 
+    setLightState({ on: true, bri: 254, hue: 0, sat: 254 });
+    setTimeout(() => {
+      setLightState({ on: false }); 
+    }, 2000);
+
     setTimeout(() => {
       alert(`💀 Game Over! Final Score: ${score}`);
       window.location.reload();
@@ -174,7 +199,7 @@ export async function init(containerId) {
   return {
     dispose() {
       renderer.dispose();
-      container.innerHTML = '';
-    }
+      container.innerHTML = "";
+    },
   };
 }
