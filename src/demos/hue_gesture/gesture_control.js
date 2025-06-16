@@ -24,10 +24,10 @@ statusText.style.padding = "10px";
 statusText.style.background = "#000";
 statusText.style.color = "#fff";
 statusText.style.fontSize = "16px";
-statusText.style.display = "none"; // Hide by default
+statusText.style.display = "none"; 
 document.body.appendChild(statusText);
 
-// 🔘 Toggle Buttons UI
+// Toggle Buttons UI
 const controlsContainer = document.createElement("div");
 controlsContainer.style.position = "fixed";
 controlsContainer.style.top = "10px";
@@ -47,7 +47,7 @@ toggleModeBtn.style.border = "none";
 toggleModeBtn.style.cursor = "pointer";
 controlsContainer.appendChild(toggleModeBtn);
 
-let audioModelActive = false;
+let currentMode = "video";
 let recognizerInstance = null;
 let discoInterval = null;
 let lastState = null;
@@ -55,71 +55,77 @@ let model = await handpose.load();
 let animationFrameId = null;
 
 toggleModeBtn.onclick = async () => {
-  audioModelActive = !audioModelActive;
-  if (audioModelActive) {
-    // Stop camera
-    videoEnabled = false;
-    if (video.srcObject) {
-      video.srcObject.getTracks().forEach((track) => track.stop());
-      video.srcObject = null;
-    }
-    if (animationFrameId) {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = null;
-    }
-    statusText.style.display = "block";
-    toggleModeBtn.innerText = "🎤 Audio";
-
-    recognizerInstance = await initAudioModel(async (action) => {
-      if (action === "on" || action === "on-white") {
-        console.log("🟢 Light ON triggered by voice");
-        await turnOn();
-        if (action === "on-white") {
-          await setLightState({
-            on: true,
-            bri: 254,
-            hue: 0,
-            sat: 0,
-            colormode: "hs",
-          });
-        }
-      } else if (action === "stopDisco") {
-        console.log("🛑 Disco mode stopped");
-        if (discoInterval) {
-          clearInterval(discoInterval);
-          discoInterval = null;
-        }
-        await turnOff();
-      } else if (action === "disco") {
-        console.log("🌈 Disco mode triggered by voice");
-        await turnOn();
-        let hue = 0;
-        discoInterval = setInterval(async () => {
-          hue = (hue + 5000) % 65535;
-          await cycleColor(hue);
-        }, 300);
-      }
-    });
-  } else {
-    // Stop audio
-    stopAudioModel();
-    console.log("🎤 Audio recognizer stopped");
-
-    // Start camera
-    await setupCamera();
-    model = await handpose.load();
-    statusText.style.display = "block";
-    statusText.innerText = "Handpose loaded";
+  if (currentMode === "video") {
+    currentMode = "audio";
+    stopCamera();
+    await startAudioMode();
     toggleModeBtn.innerText = "📸 Video";
-
-    const runDetection = async () => {
-      const predictions = await model.estimateHands(video);
-      await detectGesture(predictions);
-      animationFrameId = requestAnimationFrame(runDetection);
-    };
-    runDetection();
+  } else {
+    currentMode = "video";
+    stopAudioModel();
+    await startVideoMode();
+    toggleModeBtn.innerText = "🎤 Audio";
   }
 };
+
+function stopCamera() {
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach((track) => track.stop());
+    video.srcObject = null;
+  }
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+}
+
+async function startVideoMode() {
+  await setupCamera();
+  model = await handpose.load();
+  statusText.style.display = "block";
+  statusText.innerText = "Handpose loaded";
+
+  const runDetection = async () => {
+    const predictions = await model.estimateHands(video);
+    await detectGesture(predictions);
+    animationFrameId = requestAnimationFrame(runDetection);
+  };
+  runDetection();
+}
+
+async function startAudioMode() {
+  statusText.style.display = "block";
+  recognizerInstance = await initAudioModel(async (action) => {
+    if (action === "on" || action === "on-white") {
+      console.log("🟢 Light ON triggered by voice");
+      await turnOn();
+      if (action === "on-white") {
+        await setLightState({
+          on: true,
+          bri: 254,
+          hue: 0,
+          sat: 0,
+          colormode: "hs",
+        });
+      }
+    } else if (action === "stopDisco") {
+      console.log("🛑 Disco mode stopped");
+      if (discoInterval) {
+        clearInterval(discoInterval);
+        discoInterval = null;
+      }
+      await turnOff();
+    } else if (action === "disco") {
+      console.log("🌈 Disco mode triggered by voice");
+      await turnOn();
+      let hue = 0;
+      discoInterval = setInterval(async () => {
+        hue = (hue + 5000) % 65535;
+        await cycleColor(hue);
+      }, 300);
+    }
+  });
+}
 
 async function setupCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
@@ -138,7 +144,7 @@ async function detectGesture(predictions) {
   if (predictions.length > 0) {
     const landmarks = predictions[0].landmarks;
     await detectPowerGesture(landmarks, statusText);
-    await detectColorGesture(landmarks, statusText);
+    //await detectColorGesture(landmarks, statusText);
   } else {
     if (statusText) {
       statusText.innerText = "No hand detected";
@@ -146,21 +152,3 @@ async function detectGesture(predictions) {
   }
 }
 
-async function main() {
-  statusText.style.display = "block";
-  statusText.innerText = "Loading handpose...";
-
-  await setupCamera();
-  model = await handpose.load();
-  if (statusText) {
-    statusText.innerText = "Handpose loaded";
-  }
-
-  const runDetection = async () => {
-    const predictions = await model.estimateHands(video);
-    await detectGesture(predictions);
-    animationFrameId = requestAnimationFrame(runDetection);
-  };
-
-  runDetection();
-}
