@@ -6,6 +6,7 @@ import { detectColorGesture } from "./color_gestures.js";
 import { initAudioModel, stopAudioModel } from "./clap_control.js";
 import { cycleColor } from "./common.js";
 
+// Video element for webcam feed
 const video = document.createElement("video");
 video.style.position = "fixed";
 video.style.right = "0";
@@ -15,7 +16,7 @@ video.height = 480;
 video.autoplay = true;
 document.body.appendChild(video);
 
-let videoEnabled = false;
+// Status Text UI
 let statusText = document.createElement("div");
 statusText.style.position = "fixed";
 statusText.style.top = "10px";
@@ -24,13 +25,13 @@ statusText.style.padding = "10px";
 statusText.style.background = "#000";
 statusText.style.color = "#fff";
 statusText.style.fontSize = "16px";
-statusText.style.display = "none"; 
+statusText.style.display = "none";
 document.body.appendChild(statusText);
 
 // Toggle Buttons UI
 const controlsContainer = document.createElement("div");
-controlsContainer.style.position = "fixed";
-controlsContainer.style.top = "10px";
+controlsContainer.style.position = "absolute";
+controlsContainer.style.bottom = "1px";
 controlsContainer.style.right = "10px";
 controlsContainer.style.display = "flex";
 controlsContainer.style.gap = "10px";
@@ -39,18 +40,16 @@ document.body.appendChild(controlsContainer);
 
 // Single mode toggle button
 const toggleModeBtn = document.createElement("button");
-toggleModeBtn.innerText = "🎛️ Start";
+toggleModeBtn.innerText = "🎤";
 toggleModeBtn.style.padding = "10px";
-toggleModeBtn.style.background = "#444";
+toggleModeBtn.style.background = "#0D8EE9";
 toggleModeBtn.style.color = "#fff";
 toggleModeBtn.style.border = "none";
 toggleModeBtn.style.cursor = "pointer";
 controlsContainer.appendChild(toggleModeBtn);
 
 let currentMode = "video";
-let recognizerInstance = null;
 let discoInterval = null;
-let lastState = null;
 let model = await handpose.load();
 let animationFrameId = null;
 
@@ -59,12 +58,12 @@ toggleModeBtn.onclick = async () => {
     currentMode = "audio";
     stopCamera();
     await startAudioMode();
-    toggleModeBtn.innerText = "📸 Video";
+    toggleModeBtn.innerText = "📸";
   } else {
     currentMode = "video";
     stopAudioModel();
     await startVideoMode();
-    toggleModeBtn.innerText = "🎤 Audio";
+    toggleModeBtn.innerText = "🎤";
   }
 };
 
@@ -80,9 +79,9 @@ function stopCamera() {
 }
 
 async function startVideoMode() {
+  statusText.style.display = "block";
   await setupCamera();
   model = await handpose.load();
-  statusText.style.display = "block";
   statusText.innerText = "Handpose loaded";
 
   const runDetection = async () => {
@@ -94,8 +93,8 @@ async function startVideoMode() {
 }
 
 async function startAudioMode() {
-  statusText.style.display = "block";
-  recognizerInstance = await initAudioModel(async (action) => {
+  statusText.style.display = "none";
+  await initAudioModel(async (action) => {
     if (action === "on" || action === "on-white") {
       console.log("🟢 Light ON triggered by voice");
       await turnOn();
@@ -151,4 +150,3 @@ async function detectGesture(predictions) {
     }
   }
 }
-
