@@ -146,7 +146,6 @@
 
 <script>
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import fileIcon from "/assets/FilesNoText.svg";
 import computerIcon from "/assets/ComputerNoText.svg";
@@ -394,28 +393,52 @@ export default {
     initThree() {
       const canvas = this.$refs.canvas;
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      const camera = new THREE.OrthographicCamera(
+        width / -2,
+        width / 2,
+        height / 2,
+        height / -2,
+        1,
         1000
       );
-      camera.position.z = 5;
+      camera.position.z = 10;
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(width, height);
       renderer.setClearColor(0x000000, 0);
+      renderer.toneMapping = THREE.NoToneMapping;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-      const light = new THREE.AmbientLight(0xffffff, 1);
-      scene.add(light);
+      let plane;
+      const setSize = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
 
-      const loader = new GLTFLoader();
-      loader.load("/models/windows_xp_desktop_3d.glb", (gltf) => {
-        const model = gltf.scene;
-        model.position.set(1.06, 0, 0);
-        model.scale.set(23, 16.06, 0.1);
-        scene.add(model);
-        this.xpDesktopModel = model;
+        camera.left = width / -2;
+        camera.right = width / 2;
+        camera.top = height / 2;
+        camera.bottom = height / -2;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(width, height);
+
+        if (plane) {
+          plane.scale.set(width, height, 1);
+        }
+      };
+
+      const loader = new THREE.TextureLoader();
+      loader.load("/assets/WindowsXPBackground1.png", (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const geometry = new THREE.PlaneGeometry(1, 1);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        plane = new THREE.Mesh(geometry, material);
+        scene.add(plane);
+        setSize();
       });
 
       const animate = () => {
@@ -424,11 +447,7 @@ export default {
       };
       animate();
 
-      window.addEventListener("resize", () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
+      window.addEventListener("resize", setSize);
 
       this.scene = scene;
       this.camera = camera;
