@@ -6,6 +6,7 @@ import {
   startHandTracking,
 } from "../dino_runner/gesture_controller";
 import { setLightState } from "../../services/hueService";
+import errorSoundFile from "/assets/sound/Windows XP Error.wav";
 
 export async function init(containerId) {
   const container = document.getElementById(containerId);
@@ -175,6 +176,71 @@ export async function init(containerId) {
   }
   animate();
 
+  function showGameOverModal(score) {
+    const existingModal = document.getElementById('gameOverModal');
+    if (existingModal) {
+      existingModal.style.display = 'flex';
+      document.getElementById('gameOverText').innerText = `💀 Game Over! Final Score: ${score}`;
+      const errorSound = new Audio(errorSoundFile);
+      errorSound.play();
+      return;
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'gameOverModal';
+    modal.style.position = 'absolute';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.background = 'rgba(0,0,0,0.6)';
+    modal.style.zIndex = '9999';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+
+    const content = document.createElement('div');
+    content.id = 'gameOverContent';
+    content.style.width = '450px';
+    content.style.height = '244px';
+    content.style.background = "url('/assets/GameOver.svg') no-repeat center";
+    content.style.backgroundSize = 'contain';
+    content.style.position = 'relative';
+    content.style.color = 'black';
+    content.style.fontFamily = 'Arial, sans-serif';
+
+    const text = document.createElement('p');
+    text.id = 'gameOverText';
+    text.innerText = `Final Score: ${score}`;
+    text.style.position = 'absolute';
+    text.style.top = '30%';
+    text.style.left = '50%';
+    text.style.transform = 'translateX(-50%)';
+    text.style.fontSize = '22px';
+
+    const button = document.createElement('button');
+    button.innerText = 'OK';
+    button.onclick = () => window.location.reload();
+    button.style.position = 'absolute';
+    button.style.bottom = '15%';
+    button.style.left = '50%';
+    button.style.transform = 'translateX(-50%)';
+    button.style.width = '80px';
+    button.style.height = '30px';
+    button.style.fontSize = '16px';
+    button.style.background = '#ccc';
+    button.style.border = '2px solid #888';
+    button.style.boxShadow = '2px 2px #444';
+    button.style.cursor = 'pointer';
+
+    content.appendChild(text);
+    content.appendChild(button);
+    modal.appendChild(content);
+    const errorSound = new Audio(errorSoundFile);
+    errorSound.play();
+    document.body.appendChild(modal);
+  }
+
   function death() {
     isRunning = false;
     isDead = true;
@@ -191,8 +257,7 @@ export async function init(containerId) {
     }, 2000);
 
     setTimeout(() => {
-      alert(`💀 Game Over! Final Score: ${score}`);
-      window.location.reload();
+      showGameOverModal(score);
     }, 2000);
   }
 
