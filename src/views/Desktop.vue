@@ -29,11 +29,7 @@
       @mousedown="startDragging"
     >
       <div class="popup-drag-zone"></div>
-      <img
-        src="/assets/MyComputer.svg"
-        class="popup-image"
-        alt="My Computer"
-      />
+      <img src="/assets/MyComputer.svg" class="popup-image" alt="My Computer" />
 
       <!-- Links folder inside -->
       <div class="links-folder" @click.stop="openLinksWindow">
@@ -79,7 +75,6 @@
     </div>
 
     <!-- File popup with placeholder demos -->
-    <!-- File popup with embedded demo container -->
     <div
       v-if="showFileWindow"
       class="popup-group"
@@ -112,7 +107,10 @@
         :key="index"
         class="demo-file r"
         :style="{ top: demo.top + 'px', left: demo.left + 'px' }"
-        @click.stop="loadDemo(demo.demoName)"
+        @click.stop="
+          playClickSound();
+          loadDemo(demo.demoName);
+        "
       >
         <img :src="demo.icon" alt="Demo Icon" class="demo-icon" />
         <p class="demo-box">{{ demo.label }}</p>
@@ -164,7 +162,7 @@ export default {
       clickSound: clickSoundFile,
       icons: [
         { src: computerIcon, name: "My Computer", top: 80, left: 40 },
-        { src: fileIcon, name: "File", top: 200, left: 45 },
+        { src: fileIcon, name: "Demos", top: 200, left: 45 },
         { src: documentsIcon, name: "Documents", top: 310, left: 45 },
         {
           src: "assets/Cactus.svg",
@@ -279,6 +277,8 @@ export default {
         this.showComputerWindow = true;
       } else if (name === "JumpBoy") {
         this.loadDemo("dino_runner");
+      } else if (name === "Demos") {
+        this.showFileWindow = true;
       }
     },
     openLink(url) {
@@ -509,7 +509,6 @@ canvas {
   width: 70px;
   height: 70px;
   transition: transform 0.2s;
-
 }
 
 .file-icon:hover {
@@ -517,7 +516,7 @@ canvas {
 }
 
 .icon-name {
-  color: white;
+  color: #ffffff87;
   font-size: 0.8rem;
   text-align: center;
   margin-top: 1px;
@@ -553,7 +552,7 @@ canvas {
   border: none;
   padding: 4px 7px;
   cursor: pointer;
-  z-index: 4;
+  z-index: 1000;
 }
 
 .links-folder {
