@@ -134,18 +134,9 @@ async function startAudioMode() {
   audioIcon.style.zIndex = "10001";
   document.body.appendChild(audioIcon);
   await initAudioModel(async (action) => {
-    if (action === "on" || action === "on-white") {
+    if (action === "on") {
       console.log("🟢 Light ON triggered by voice");
       await turnOn();
-      if (action === "on-white") {
-        await setLightState({
-          on: true,
-          bri: 254,
-          hue: 0,
-          sat: 0,
-          colormode: "hs",
-        });
-      }
     } else if (action === "stopDisco") {
       console.log("🛑 Disco mode stopped");
       if (discoInterval) {

@@ -1,4 +1,3 @@
-// src/dino_runner/dino_runner.js
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import {
@@ -180,7 +179,7 @@ export async function init(containerId) {
     const existingModal = document.getElementById('gameOverModal');
     if (existingModal) {
       existingModal.style.display = 'flex';
-      document.getElementById('gameOverText').innerText = `💀 Game Over! Final Score: ${score}`;
+      document.getElementById('gameOverText').innerText = `Final Score: ${score}`;
       const errorSound = new Audio(errorSoundFile);
       errorSound.play();
       return;

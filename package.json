@@ -17,6 +17,7 @@
     "@tensorflow-models/speech-commands": "^0.5.4",
     "@tensorflow/tfjs": "^3.21.0",
     "@tensorflow/tfjs-core": "^3.21.0",
+    "98.css": "^0.1.21",
     "dat.gui": "^0.7.9",
     "three": "^0.176.0",
     "vue": "^3.5.13",

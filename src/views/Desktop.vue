@@ -142,11 +142,14 @@
   <div v-else class="blue-screen">
     <img :src="blueScreenImage" class="blue-screen-image" />
   </div>
+
+ <DocumentsWindow v-if="showDocumentsWindow" @close="showDocumentsWindow = false" />
 </template>
 
 <script>
 import * as THREE from "three";
 
+import DocumentsWindow from "../components/DocumentsWindow.vue";
 import fileIcon from "/assets/FilesNoText.svg";
 import computerIcon from "/assets/ComputerNoText.svg";
 import documentsIcon from "/assets/DocumentsNoText.svg";
@@ -156,6 +159,9 @@ import blueScreenImage from "/assets/BlueScreenChat.svg";
 
 export default {
   name: "Desktop",
+  components: {
+    DocumentsWindow
+  },
   data() {
     return {
       clickSound: clickSoundFile,
@@ -278,6 +284,8 @@ export default {
         this.loadDemo("dino_runner");
       } else if (name === "Demos") {
         this.showFileWindow = true;
+      } else if (name === "Documents") {
+        this.showDocumentsWindow = true;
       }
     },
     openLink(url) {
