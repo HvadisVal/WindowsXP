@@ -22,7 +22,7 @@ document.body.appendChild(statusText);
 // Toggle Buttons UI
 const controlsContainer = document.createElement("div");
 controlsContainer.style.position = "absolute";
-controlsContainer.style.bottom = "5px";
+controlsContainer.style.bottom = "1px";
 controlsContainer.style.right = "40px";
 controlsContainer.style.display = "flex";
 controlsContainer.style.gap = "10px";
@@ -30,9 +30,9 @@ controlsContainer.style.zIndex = "1000";
 document.body.appendChild(controlsContainer);
 
 // Single mode toggle button
-const toggleModeBtn = document.createElement("button");
+const toggleModeBtn = document.createElement("span");
 toggleModeBtn.innerText = "🎤";
-toggleModeBtn.style.padding = "5px, 10px";
+toggleModeBtn.style.padding = "5px";
 toggleModeBtn.style.background = "#0D8EE9";
 toggleModeBtn.style.color = "#fff";
 toggleModeBtn.style.border = "none";

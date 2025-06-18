@@ -53,11 +53,7 @@
     </div>
 
     <div class="window-body">
-      <pre ref="codeBlock" :style="{ fontSize: zoom + 'px' }">
-        <code>
-          <span v-for="(line, i) in folders[selectedFolderIndex].files[selectedFileIndex].code.split('\n')" :key="i" :data-line="i + 1" v-html="line + '<br>'" />
-        </code>
-      </pre>
+      <pre ref="codeBlock" :style="{ fontSize: zoom + 'px' }"><code><div v-for="(line, i) in folders[selectedFolderIndex].files[selectedFileIndex].code.split('\n')" :key="i" :data-line="i + 1" v-html="line" /></code></pre>
     </div>
     <div class="resize-handle" @mousedown.prevent="startResize" />
   </div>
