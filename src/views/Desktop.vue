@@ -623,7 +623,8 @@ canvas {
 .error-ok {
   position: absolute;
   bottom: 23px;
-  right: 130px;
+  right: 50%;
+  transform: translateX(50%);
   background: #c0c0c0;
   border: none;
   font-weight: medium;

@@ -61,12 +61,20 @@
 
 <script>
 import hueServiceCode from "../services/hueService.js?raw";
+// Demo Mutating Code
+import commonMutatingCode from "../demos/demo1_threejs_cube/demo1.js?raw";
+
+// Demo Hue Gesture Control Code
 import commonCode from "../demos/hue_gesture/common.js?raw";
 import gestureControlCode from "../demos/hue_gesture/gesture_control.js?raw";
 import clapControlCode from "../demos/hue_gesture/clap_control.js?raw";
 import powerGestureCode from "../demos/hue_gesture/power_gestures.js?raw";
 import colorGestureCode from "../demos/hue_gesture/color_gestures.js?raw";
+
+// Demo Handpose Code
 import demoHandposeCode from "../demos/demo4_handpose/demo4.js?raw";
+
+// Demo JumpBoy Code
 import jumpBoyCode from "../demos/dino_runner/dino_runner.js?raw";
 import gestureControllerCode from "../demos/dino_runner/dino_runner.js?raw";
 
@@ -85,6 +93,12 @@ export default {
       isResizing: false,
       resizeStart: { x: 0, y: 0 },
       folders: [
+          {
+          name: "cube",
+          files: [
+            { title: "demo1.js", code: commonMutatingCode, startLine: 1 },
+          ],
+        },
         {
           name: "gesture",
           files: [
