@@ -43,7 +43,7 @@
         <p class="file-label">Demos</p>
       </div>
 
-      <button class="popup-close" @click.stop="closeWindow">X</button>
+      <span class="popup-close" @click.stop="closeWindow">X</span>
     </div>
 
     <!-- Links popup -->
@@ -59,7 +59,7 @@
         alt="Links Folder Opened"
         class="popup-image"
       />
-      <button class="popup-close" @click.stop="closeLinksWindow">X</button>
+      <span class="popup-close" @click.stop="closeLinksWindow">X</span>
 
       <!-- Clickable Links inside Links popup -->
       <div
@@ -82,11 +82,7 @@
       @mousedown="startDraggingFile"
     >
       <div class="popup-drag-zone"></div>
-      <img
-        src="/assets/MyComputerNoFile.svg"
-        class="popup-image"
-        alt="File Folder"
-      />
+      <img src="/assets/MyComputerNoFile.svg" class="popup-image" alt="File Folder" />
 
       <!-- Demo mount container -->
       <div
@@ -116,7 +112,7 @@
         <p class="demo-box">{{ demo.label }}</p>
       </div>
 
-      <button class="popup-close" @click.stop="closeFileWindow">X</button>
+      <span class="popup-close" @click.stop="closeFileWindow">X</span>
     </div>
 
     <!-- Error popups -->
@@ -143,7 +139,7 @@
     <img :src="blueScreenImage" class="blue-screen-image" />
   </div>
 
- <DocumentsWindow v-if="showDocumentsWindow" @close="showDocumentsWindow = false" />
+  <DocumentsWindow v-if="showDocumentsWindow" @close="showDocumentsWindow = false" />
 </template>
 
 <script>
@@ -160,7 +156,7 @@ import blueScreenImage from "/assets/BlueScreenChat.svg";
 export default {
   name: "Desktop",
   components: {
-    DocumentsWindow
+    DocumentsWindow,
   },
   data() {
     return {
@@ -179,7 +175,8 @@ export default {
       linkItems: [
         {
           label: "Ikea",
-          url: "https://www.ikea.com/dk/da/p/landskrona-3-pers-sofa-gunnared-bla-trae-s29393417/",
+          url:
+            "https://www.ikea.com/dk/da/p/landskrona-3-pers-sofa-gunnared-bla-trae-s29393417/",
           icon: "/logos/Ikea.svg",
           top: 260,
           left: 100,
@@ -250,7 +247,7 @@ export default {
       showDocumentsWindow: false,
       popupPosition: { top: 100, left: 200 },
       linksPopup: { top: 0, left: 260 },
-      filePopup: { top: 240, left: 320 },
+      filePopup: { top: 200, left: 300 },
 
       isDragging: false,
       isDraggingLinks: false,
